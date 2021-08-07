@@ -14,5 +14,13 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@popperjs/core": "^2.9.3",
+        "autoprefixer": "^10.3.1",
+        "bootstrap": "^5.1.0",
+        "postcss-loader": "^6.1.1",
+        "sass": "^1.37.5",
+        "sass-loader": "^10.2.0"
     }
 }
