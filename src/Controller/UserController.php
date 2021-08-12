@@ -17,6 +17,8 @@ class UserController extends AbstractController
      */
     public function listAction()
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository(User::class)->findAll()]);
     }
 
@@ -51,6 +53,7 @@ class UserController extends AbstractController
      */
     public function editAction(User $user, UserPasswordHasherInterface $passwordHasher, Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
