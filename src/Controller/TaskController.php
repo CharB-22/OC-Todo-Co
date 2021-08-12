@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use function PHPUnit\Framework\throwException;
+
 class TaskController extends AbstractController
 {
     /**
@@ -93,12 +95,20 @@ class TaskController extends AbstractController
      */
     public function deleteTaskAction(Task $task)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($task);
-        $em->flush();
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+        if ($this->getUser() === $task->getUser() || $this->isGranted("ROLE_ADMIN"))
+        {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($task);
+            $em->flush();
+    
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+    
+            return $this->redirectToRoute('task_list');
+        }
 
+        $this->addFlash('error', 'Vous n\'avez pas les droits suffisants pour cette action.');
+    
         return $this->redirectToRoute('task_list');
     }
 }
