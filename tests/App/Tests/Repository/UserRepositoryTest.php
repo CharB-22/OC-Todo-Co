@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UserRepositoryTest extends KernelTestCase {
     
+
     //Make sure the database has some fixtures to test
     public function testCount()
     {
