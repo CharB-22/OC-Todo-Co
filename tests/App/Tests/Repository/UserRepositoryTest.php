@@ -1,0 +1,16 @@
+<?php
+
+use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+
+class UserRepositoryTest extends KernelTestCase {
+    
+    //Make sure the database has some fixtures to test
+    public function testCount()
+    {
+        self::bootKernel();
+        $users = self::$container->get(UserRepository::class)->count([]);
+
+        $this->assertEquals(2, $users);
+    }
+}
