@@ -20,6 +20,7 @@ class Task
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotBlank
      */
     private $createdAt;
 
@@ -37,6 +38,7 @@ class Task
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotBlank
      */
     private $isDone;
 
