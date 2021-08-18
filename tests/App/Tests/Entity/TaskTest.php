@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class TaskTest extends KernelTestCase {
     
 
-    //Make sure the database has some fixtures to test
+    //Create a mock object
     public function getEntity(): Task
     {
         return (new Task())
@@ -37,11 +37,39 @@ class TaskTest extends KernelTestCase {
         $this->assertCount($number, $errors, implode(', ', $messages));
     }
 
+    public function testInstanceOfEntity()
+    {
+        $this->assertInstanceOf(Task::class, $this->getEntity());
+    }
+
+
+    // Check object has all expected attributes
+    public function testObjectHasAllAttributes()
+    {
+        $this->assertObjectHasAttribute('id', new Task);
+        $this->assertObjectHasAttribute('createdAt', new Task);
+        $this->assertObjectHasAttribute('title', new Task);
+        $this->assertObjectHasAttribute('content', new Task);
+        $this->assertObjectHasAttribute('isDone', new Task);
+    }
+    
+    public function testGetCreatedAt()
+    {
+        $this->assertInstanceOf(DateTime::class, $this->getEntity()->getCreatedAt());
+    }
+
+    public function testIsDone()
+    {
+        $this->assertIsBool($this->getEntity()->isDone());
+    }
+
     public function testValidEntity()
     {
         $this->assertHasErrors($this->getEntity(), 0);
     }
 
+
+    // Check constraints with not blank
     public function testTitleNotBlank()
     {
         $task = $this->getEntity()->setTitle('');
@@ -58,5 +86,13 @@ class TaskTest extends KernelTestCase {
     {
         $task = $this->getEntity()->setIsDone('');
         $this->assertHasErrors($task, 1);
+    }
+
+    public function testToggle()
+    {
+        $task = $this->getEntity();
+        $task->toggle(!$task->isDone());
+
+        return $this->assertNotTrue($task->isDone());
     }
 }
