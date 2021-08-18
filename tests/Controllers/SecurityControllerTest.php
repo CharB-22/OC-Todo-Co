@@ -21,7 +21,7 @@ class SecurityControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $csrf_token = $client->getContainer()->get('security.csrf.token_manager')->getToken('authenticate');
-        $crawler = $client->request('POST', '/login', [
+        $client->request('POST', '/login', [
             '_csrf_token' => $csrf_token,
             'email' => 'testUser@mail.com',
             'password' => 'testUser'
@@ -34,16 +34,24 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginWithInvalidCredentials()
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/login');
-        $form = $crawler->selectButton('Se connecter')->form([
+        $csrf_token = $client->getContainer()->get('security.csrf.token_manager')->getToken('authenticate');
+        $client->request('GET', '/login', [
+            '_csrf_token' => $csrf_token,
             'email' => 'user@mail.com',
             'password' => 'fakePassword'
         ]);
-        $client->submit($form);
+
         $this->assertResponseRedirects('/login');
 
         $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-danger');
     }
 
+    public function testLogout()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/logout');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+    
+    }
 }

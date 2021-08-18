@@ -13,6 +13,7 @@ use function PHPUnit\Framework\throwException;
 
 class TaskController extends AbstractController
 {
+
     /**
      * @Route("/tasks", name="task_list")
      */
@@ -25,7 +26,7 @@ class TaskController extends AbstractController
         );
     }
 
-       /**
+    /**
      * @Route("/tasks/create", name="task_create")
      */
     public function createAction(Request $request)
@@ -81,7 +82,7 @@ class TaskController extends AbstractController
      * @Route("/tasks/{id}/toggle", name="task_toggle")
      */
     public function toggleTaskAction(Task $task)
-    {
+     {
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
 
