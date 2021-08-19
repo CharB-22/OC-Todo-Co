@@ -10,6 +10,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 use Faker\Factory;
 
+/**
+ * @codeCoverageIgnore
+ */
 class TaskFixtures extends Fixture
 {
     private $hasher;
