@@ -20,7 +20,6 @@ class Task
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\NotBlank
      */
     private $createdAt;
 
@@ -38,7 +37,6 @@ class Task
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotBlank
      */
     private $isDone;
 
@@ -70,11 +68,10 @@ class Task
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(string $title)
     {
         $this->title = $title;
 
-        return $this;
     }
 
     public function getContent(): ?string
@@ -82,11 +79,10 @@ class Task
         return $this->content;
     }
 
-    public function setContent(string $content): self
+    public function setContent(string $content)
     {
         $this->content = $content;
 
-        return $this;
     }
 
     public function getIsDone(): ?bool
