@@ -12,35 +12,25 @@ class UserControllerTest extends WebTestCase
 
     use NeedLogin;
 
-    // Check admin pages are restricted
-    public function testUserListRestricted()
+    public function getEntity() {
+        return static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['username' => 'testAdmin']);
+    }
+
+    public function testUserListDisplay()
     {
         $client = static::createClient();
         $client->request('GET', '/users');
         // The visitor is redirected to the login page
-        $this->assertResponseRedirects('/login', Response::HTTP_FOUND);
+        $this->assertResponseRedirects('/login');
     }
 
-    public function testCreateUserRestricted()
+    public function testCreateUserDisplayRestricted()
     {
         $client = static::createClient();
         $client->request('GET', '/users/create');
         // The visitor is redirected to the login page 
-        $this->assertResponseRedirects('/login', Response::HTTP_FOUND);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertResponseRedirects('/login');
     }
 
-    public function testAdminUserList()
-    {
-        $client = static::createClient();
-
-        // Pick the admin user in the database
-        self::bootKernel();
-        $user = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['username' => 'testAdmin']);
-        
-        $this->login($client, $user);
-
-        $client->request('GET', '/users');
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-    }
 }

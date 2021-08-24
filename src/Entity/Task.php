@@ -24,25 +24,25 @@ class Task
     private $createdAt;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Vous devez saisir un titre.")
-     */
+    * @ORM\Column(type="string", length=255)
+	* @Assert\NotBlank(message="Vous devez saisir un titre.")
+    */
     private $title;
 
     /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank(message="Vous devez saisir du contenu.")
-     */
+    * @ORM\Column(type="text")
+    * @Assert\NotBlank(message="Vous devez saisir du contenu.")
+    */
     private $content;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
+    * @ORM\Column(type="boolean")
+    */
     private $isDone;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
@@ -68,10 +68,11 @@ class Task
         return $this->title;
     }
 
-    public function setTitle(string $title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
+        return $this;
     }
 
     public function getContent(): ?string
@@ -79,10 +80,11 @@ class Task
         return $this->content;
     }
 
-    public function setContent(string $content)
+    public function setContent(string $content): self
     {
         $this->content = $content;
 
+        return $this;
     }
 
     public function getIsDone(): ?bool
@@ -96,15 +98,6 @@ class Task
 
         return $this;
     }
-    public function isDone()
-    {
-        return $this->isDone;
-    }
-    
-    public function toggle($flag)
-    {
-        $this->isDone = $flag;
-    }
 
     public function getUser(): ?User
     {
@@ -116,5 +109,15 @@ class Task
         $this->user = $user;
 
         return $this;
+    }
+
+    public function isDone()
+    {
+        return $this->isDone;
+    }
+
+    public function toggle($flag)
+    {
+        $this->isDone = $flag;
     }
 }
