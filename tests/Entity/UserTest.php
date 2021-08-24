@@ -69,31 +69,6 @@ class UserTest extends KernelTestCase {
         $this->assertEquals('caseUser@mail.com', $this->getEntity()->getEmail());
     }
 
-    public function testAddTask()
-    {
-        $user = $this->getEntity();
-        
-        $task = new Task();
-
-        $task->setTitle('Tâche à faire')
-             ->setContent('C\'est la description de la tâche.')
-             ->setCreatedAt(new \DateTime())
-             ->setUser($user)
-             ->setIsDone(true);
-        
-        $user->addTask($task);
-
-        $this->assertEquals(1, count($user->getTasks()));
-    }
-
-    public function testRemoveTask()
-    {
-        // Pick a user in the database
-        self::bootKernel();
-        $user = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['id' => 8 ]);
-
-        // TBC
-    }
 
     // Check object has all expected attributes
     public function testObjectHasAllAttributes()
@@ -103,6 +78,21 @@ class UserTest extends KernelTestCase {
         $this->assertObjectHasAttribute('roles', new User);
         $this->assertObjectHasAttribute('password', new User);
         $this->assertObjectHasAttribute('username', new User);
+    }
+
+    public function testManageTask()
+    {
+        $task = new Task();
+
+        $user = $this->getEntity();
+
+        // Check that we have added a task
+        $user->addTask($task);
+        $this->assertSame(1, count($user->getTasks()));
+
+        // Check that the task has been removed
+        $user->removeTask($task);
+        $this->assertSame(0, count($user->getTasks()));
     }
 
     public function testValidEntity()
@@ -128,7 +118,6 @@ class UserTest extends KernelTestCase {
         $this->assertHasErrors($task, 1);
     }
 
-
     // Test unicity of key email
     public function testEmailNotUnique()
     {
@@ -136,5 +125,11 @@ class UserTest extends KernelTestCase {
         $this->assertHasErrors($task, 1);
     }
 
+    public function testgetUserIdentifier()
+    {
+        $userEmail = $this->getEntity()->getEmail();
+
+        $this->assertEquals($this->getEntity()->getUserIdentifier(), $userEmail);
+    }
 
 }

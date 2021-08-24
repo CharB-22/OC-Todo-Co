@@ -4,6 +4,7 @@ namespace App\tests\Entity;
 
 use App\Entity\Task;
 use App\Entity\User;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class TaskTest extends KernelTestCase {
@@ -74,5 +75,17 @@ class TaskTest extends KernelTestCase {
         $this->assertHasErrors($task, 1);
     }
 
+    public function testCreatedAt()
+    {
+        $dateTask = $this->getEntity()->getCreatedAt();
+        $this->assertInstanceOf(DateTime::class, $dateTask);
+        
+    }
+
+    public function testIsDone()
+    {
+        $isDoneStatus = $this->getEntity()->getIsDone();
+        $this->assertIsBool($isDoneStatus);
+    }
 
 }
