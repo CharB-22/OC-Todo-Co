@@ -13,7 +13,8 @@ class UserControllerTest extends WebTestCase
     use NeedLogin;
 
     public function getEntity() {
-        return static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['username' => 'testAdmin']);
+        $admin = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['username' => 'testAdmin']);
+        return $admin;
     }
 
     public function testDisplayLogin()
@@ -32,6 +33,18 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
 
+    public function testUserListDisplayAuthorized()
+    {
+        $client = static::createClient();
+
+        $user = $this->getEntity();
+        $this->login($client, $user);
+        
+        $client->request('GET', '/users');
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertSelectorTextContains('h1', 'Liste des utilisateurs');
+    }
+
     public function testCreateUserFormUnauthorized()
     {
         $client = static::createClient();
@@ -40,24 +53,44 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
 
-    /*
     public function testCreateUser()
     {
         $client = static::createClient();
 
+        $user = $this->getEntity();
+        $this->login($client, $user);
+
         $crawler = $client->request('GET', '/users/create');
+        
         $form = $crawler->selectButton('Ajouter')->form();
         $form['user[username]'] = 'usernameTest';
         $form['user[password][first]'] = 'passwordTest';
         $form['user[password][second]'] = 'passwordTest';
         $form['user[email]'] = 'emailTest';
-        $form['user[roles]'] = 'ROLE_USER';
+        $form['user[roles]'] = ['ROLE_ADMIN'];
         $client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        /*$this->assertResponseRedirects('/users');
-        $client->followRedirect();
-        $this->assertSelectorExists('.alert.alert-success');
-    }*/
+    }
+
+    public function testEditUserFormUnauthorized()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/users/8/edit');
+        // The visitor is redirected to the login page
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+    }
+
+    public function testEditUserAuthorized()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/users/8/edit');
+        // The visitor is redirected to the login page
+        $user = $this->getEntity();
+        $this->login($client, $user);
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+    }
 
 }

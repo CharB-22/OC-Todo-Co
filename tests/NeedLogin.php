@@ -11,14 +11,13 @@ trait NeedLogin {
 
     public function login(KernelBrowser $client, User $user)
     {
-
-        // Create a token and save it in the session info
         $session = $client->getContainer()->get('session');
+
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
-        $session->set('security_main', serialize($token));
+        $session->set('_security_main', serialize($token));
+
         $session->save();
 
-        // Store those information in the client
         $cookie = new Cookie($session->getName(), $session->getId());
         $client->getCookieJar()->set($cookie);
     }

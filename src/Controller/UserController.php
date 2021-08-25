@@ -15,7 +15,7 @@ class UserController extends AbstractController
 {
     /**
      * @Route("/users", name="user_list")
-     * @isGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function listAction()
     {   
@@ -24,7 +24,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/create", name="user_create")
-     * @isGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function createAction(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
@@ -37,7 +37,6 @@ class UserController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $password = $passwordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($password);
-
             $em->persist($user);
             $em->flush();
 
@@ -51,6 +50,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/users/{id}/edit", name="user_edit")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function editAction(User $user, UserPasswordHasherInterface $passwordHasher, Request $request)
     {
