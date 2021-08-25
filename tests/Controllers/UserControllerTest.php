@@ -63,14 +63,18 @@ class UserControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/users/create');
         
         $form = $crawler->selectButton('Ajouter')->form();
-        $form['user[username]'] = 'usernameTest';
+        $form['user[username]'] = 'username';
         $form['user[password][first]'] = 'passwordTest';
         $form['user[password][second]'] = 'passwordTest';
-        $form['user[email]'] = 'emailTest';
-        $form['user[roles]'] = ['ROLE_ADMIN'];
+        $form['user[email]'] = 'email2@gmail.com';
+        $form['user[roles][0]'];
+        
         $client->submit($form);
 
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertSelectorExists('.alert.alert-success');
     }
 
     public function testEditUserFormUnauthorized()
@@ -79,18 +83,31 @@ class UserControllerTest extends WebTestCase
         $client->request('GET', '/users/8/edit');
         // The visitor is redirected to the login page
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+
     }
 
     public function testEditUserAuthorized()
     {
         $client = static::createClient();
 
-        $client->request('GET', '/users/8/edit');
-        // The visitor is redirected to the login page
         $user = $this->getEntity();
         $this->login($client, $user);
         
+        $crawler = $client->request('GET', '/users/8/edit');
+        $this->assertRouteSame("user_edit");
+
+        $form = $crawler->selectButton("Modifier")->form();
+        $form['user[username]'] = 'usernameTest';
+        $form['user[password][first]'] = 'passwordTest';
+        $form['user[password][second]'] = 'passwordTest';
+
+        $client->submit($form);
+
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertSelectorExists('.alert.alert-success');
+        
     }
 
 }
