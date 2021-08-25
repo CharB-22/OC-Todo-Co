@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <h1>Créer une nouvelle tâche</h1>
     <div class="row">
         {{ form_start(form, {'action' : path('task_create')}) }}
             {{ form_widget(form) }}

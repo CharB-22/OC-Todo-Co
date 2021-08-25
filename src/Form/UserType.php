@@ -32,9 +32,9 @@ class UserType extends AbstractType
                     'Administrateur' => 'ROLE_ADMIN',
                     'Utilisateur' => 'ROLE_USER'
                 ],
-                'multiple' => true,
                 'expanded' => true,
-                'required' => true,
+                'multiple' => true,
+                'required' =>true,
             ])
         ;
     }
