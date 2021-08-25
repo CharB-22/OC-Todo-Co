@@ -66,7 +66,7 @@ class UserControllerTest extends WebTestCase
         $form['user[username]'] = 'username';
         $form['user[password][first]'] = 'passwordTest';
         $form['user[password][second]'] = 'passwordTest';
-        $form['user[email]'] = 'email2@gmail.com';
+        $form['user[email]'] = 'email3@gmail.com';
         $form['user[roles][0]'];
         
         $client->submit($form);

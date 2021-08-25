@@ -87,7 +87,7 @@ class TaskControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/tasks/29/delete');
+        $client->request('GET', '/tasks/28/delete');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $client->followRedirect();
