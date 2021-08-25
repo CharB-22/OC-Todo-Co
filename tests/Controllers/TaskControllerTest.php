@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TaskControllerTest extends WebTestCase 
 {
+
     // Test to check all routes - GET methods
     public function testTaskList()
     {
@@ -82,30 +83,26 @@ class TaskControllerTest extends WebTestCase
             $this->assertSelectorExists('.alert.alert-success');
     }
 
-
-    // Test toggle action
-    public function testToggleAction()
+    public function testDeleteTask()
     {
         $client = static::createClient();
-        $client->request('GET', '/tasks/15/toggle');
 
+        $client->request('GET', '/tasks/29/delete');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
+        $this->assertSelectorExists('.alert.alert-success');
+    }
+
+    public function testToggleTask()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/tasks/13/toggle');
+        
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
-
     }
-
-    // Test delete action
-    public function testDeleteTask()
-    {
-        $client = static::createClient();
-        $client->request('GET', '/tasks/15/delete');
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-        $this->assertResponseRedirects('/tasks');
-        $client->followRedirect();
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-    }
-
 }
