@@ -97,8 +97,8 @@ class TaskController extends AbstractController
     public function deleteTaskAction(Task $task)
     {
 
-        /*if ($this->getUser() === $task->getUser() || $this->isGranted("ROLE_ADMIN"))
-        {*/
+        if ($this->getUser() === $task->getUser() || $this->isGranted("ROLE_ADMIN"))
+        {
             $em = $this->getDoctrine()->getManager();
             $em->remove($task);
             $em->flush();
@@ -106,10 +106,10 @@ class TaskController extends AbstractController
             $this->addFlash('success', 'La tâche a bien été supprimée.');
     
             return $this->redirectToRoute('task_list');
-        /*}
+        }
 
         $this->addFlash('error', 'Vous n\'avez pas les droits suffisants pour cette action.');
     
-        return $this->redirectToRoute('task_list');*/
+        return $this->redirectToRoute('task_list');
     }
 }
