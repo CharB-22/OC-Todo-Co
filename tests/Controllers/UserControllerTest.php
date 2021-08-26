@@ -4,13 +4,35 @@ namespace App\Tests\Controllers;
 
 use App\Entity\User;
 use App\Tests\NeedLogin;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerTest extends WebTestCase 
 {
 
     use NeedLogin;
+
+    public function runCommand($string) : int {
+
+        $kernel = static::createKernel();
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+        
+        return $application->run(new StringInput(sprintf('%s --quiet', $string)));
+    }
+
+    public function setUp(): void
+    {
+        // Initialize the database for each tests (test environment)
+        $this->runCommand('doctrine:database:drop --force --env=test');
+        $this->runCommand('doctrine:database:create --env=test');
+        $this->runCommand('doctrine:schema:create --env=test');
+        $this->runCommand('doctrine:fixtures:load --env=test');
+
+        $this->runCommand('app:link-anonymous');        
+    }
 
     public function getEntity() {
         $admin = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['username' => 'testAdmin']);
@@ -66,8 +88,8 @@ class UserControllerTest extends WebTestCase
         $form['user[username]'] = 'username';
         $form['user[password][first]'] = 'passwordTest';
         $form['user[password][second]'] = 'passwordTest';
-        $form['user[email]'] = 'email3@gmail.com';
-        $form['user[roles][0]'];
+        $form['user[email]'] = 'email0@gmail.com';
+        $form['user[roles]'] = 'ROLE_USER';
         
         $client->submit($form);
 
@@ -80,7 +102,7 @@ class UserControllerTest extends WebTestCase
     public function testEditUserFormUnauthorized()
     {
         $client = static::createClient();
-        $client->request('GET', '/users/8/edit');
+        $client->request('GET', '/users/4/edit');
         // The visitor is redirected to the login page
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
 
@@ -93,7 +115,7 @@ class UserControllerTest extends WebTestCase
         $user = $this->getEntity();
         $this->login($client, $user);
         
-        $crawler = $client->request('GET', '/users/8/edit');
+        $crawler = $client->request('GET', '/users/4/edit');
         $this->assertRouteSame("user_edit");
 
         $form = $crawler->selectButton("Modifier")->form();
@@ -110,4 +132,12 @@ class UserControllerTest extends WebTestCase
         
     }
 
+    protected function tearDown(): void
+    {
+        $this->runCommand('doctrine:database:drop --force');
+
+        parent::tearDown();
+
+    }
+    
 }
