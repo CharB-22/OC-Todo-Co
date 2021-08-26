@@ -42,6 +42,15 @@ class UserFixtures extends Fixture
 
         $manager->persist($user);
 
+        // Create the "anonymous" user
+                $user = new User();
+                $user->setEmail('anonymous@mail.com')
+                     ->setPassword($this->hasher->hashPassword($user,'anonymous'))
+                     ->setRoles(['ROLE_USER'])
+                     ->setUsername('Anonymous');
+        
+                $manager->persist($user);
+
         $manager->flush();
     }
 }
