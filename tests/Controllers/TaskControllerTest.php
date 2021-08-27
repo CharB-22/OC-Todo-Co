@@ -3,11 +3,43 @@
 namespace App\Tests\Controllers;
 
 use App\Entity\Task;
+use App\Entity\User;
+use App\Tests\NeedLogin;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class TaskControllerTest extends WebTestCase 
 {
+
+    use NeedLogin;
+    
+    public function runCommand($string) : int {
+
+        $kernel = static::createKernel();
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+        
+        return $application->run(new StringInput(sprintf('%s --quiet', $string)));
+    }
+
+    public function setUp(): void
+    {
+        // Initialize the database for each tests (test environment)
+        $this->runCommand('doctrine:database:drop --force --env=test');
+        $this->runCommand('doctrine:database:create --env=test');
+        $this->runCommand('doctrine:schema:create --env=test');
+        $this->runCommand('doctrine:fixtures:load --env=test');
+
+        $this->runCommand('app:link-anonymous');        
+    }
+
+    public function getEntity($username) {
+        $admin = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['username' => $username]);
+        return $admin;
+    }
 
     // Test to check all routes - GET methods
     public function testTaskList()
@@ -62,7 +94,7 @@ class TaskControllerTest extends WebTestCase
     public function testDisplayEditTaskForm()
     {
         $client = static::createClient();
-        $client->request('GET', '/tasks/13/edit');
+        $client->request('GET', '/tasks/1/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK); 
         // Add what it should display
         $this->assertSelectorTextContains('h1', 'Modifier cette tâche');
@@ -72,7 +104,7 @@ class TaskControllerTest extends WebTestCase
     {
             $client = static::createClient();
     
-            $crawler = $client->request('GET', '/tasks/13/edit');
+            $crawler = $client->request('GET', '/tasks/1/edit');
             $form = $crawler->selectButton('Modifier')->form();
             $form['task[title]'] = 'Tâche nouvellement créer';
             $client->submit($form);
@@ -83,11 +115,14 @@ class TaskControllerTest extends WebTestCase
             $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testDeleteTask()
+    public function testAdminDeleteTask()
     {
         $client = static::createClient();
 
-        $client->request('GET', '/tasks/28/delete');
+        $user = $this->getEntity('testAdmin');
+        $this->login($client, $user);
+
+        $client->request('GET', '/tasks/2/delete');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $client->followRedirect();
@@ -98,11 +133,19 @@ class TaskControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/tasks/13/toggle');
+        $client->request('GET', '/tasks/4/toggle');
         
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
+    }
+
+    protected function tearDown(): void
+    {
+        $this->runCommand('doctrine:database:drop --force');
+
+        parent::tearDown();
+
     }
 }
