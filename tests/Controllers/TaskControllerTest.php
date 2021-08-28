@@ -129,6 +129,21 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success');
     }
 
+    public function testAnonymousDeleteTask()
+    {
+        $client = static::createClient();
+
+        $user = $this->getEntity('Anonymous');
+        $this->login($client, $user);
+
+        $client->request('GET', '/tasks/2/delete');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
+        $this->assertSelectorExists('.alert.alert-danger');
+    }
+
+
     public function testToggleTask()
     {
         $client = static::createClient();
