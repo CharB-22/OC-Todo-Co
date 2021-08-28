@@ -34,8 +34,9 @@ class UserControllerTest extends WebTestCase
         $this->runCommand('app:link-anonymous');        
     }
 
-    public function getEntity() {
-        $admin = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['username' => 'testAdmin']);
+    // Create the different roles
+    public function getEntity($userName) {
+        $admin = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['username' => $userName]);
         return $admin;
     }
 
@@ -55,11 +56,23 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
 
+    public function testUserListDisplayRoleUnauthorized()
+    {
+        $client = static::createClient();
+
+        $user = $this->getEntity('testUser');
+        $this->login($client, $user);
+
+        $client->request('GET', '/users');
+        // The visitor is redirected to the login page
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     public function testUserListDisplayAuthorized()
     {
         $client = static::createClient();
 
-        $user = $this->getEntity();
+        $user = $this->getEntity('testAdmin');
         $this->login($client, $user);
         
         $client->request('GET', '/users');
@@ -75,11 +88,23 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
 
+    public function testCreateUserFormRoleUnauthorized()
+    {
+        $client = static::createClient();
+
+        $user = $this->getEntity('testUser');
+        $this->login($client, $user);
+
+        $client->request('GET', '/users/create');
+        // The visitor is redirected to the login page
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     public function testCreateUser()
     {
         $client = static::createClient();
 
-        $user = $this->getEntity();
+        $user = $this->getEntity('testAdmin');
         $this->login($client, $user);
 
         $crawler = $client->request('GET', '/users/create');
@@ -108,11 +133,23 @@ class UserControllerTest extends WebTestCase
 
     }
 
+    public function testEditUserFormRoleUnauthorized()
+    {
+        $client = static::createClient();
+        $user = $this->getEntity('testUser');
+        $this->login($client, $user);
+
+        $client->request('GET', '/users/4/edit');
+        // The visitor is redirected to the login page
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+    }
+
     public function testEditUserAuthorized()
     {
         $client = static::createClient();
 
-        $user = $this->getEntity();
+        $user = $this->getEntity('testAdmin');
         $this->login($client, $user);
         
         $crawler = $client->request('GET', '/users/4/edit');

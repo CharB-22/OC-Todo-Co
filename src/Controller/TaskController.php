@@ -31,7 +31,7 @@ class TaskController extends AbstractController
      */
     public function createAction(Request $request)
     {
-        
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
 
@@ -60,6 +60,7 @@ class TaskController extends AbstractController
      */
     public function editAction(Task $task, Request $request)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
