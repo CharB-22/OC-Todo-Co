@@ -56,6 +56,18 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
     }
 
+    public function testUserListDisplayRoleUnauthorized()
+    {
+        $client = static::createClient();
+
+        $user = $this->getEntity('testUser');
+        $this->login($client, $user);
+
+        $client->request('GET', '/users');
+        // The visitor is redirected to the login page
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     public function testUserListDisplayAuthorized()
     {
         $client = static::createClient();
@@ -74,6 +86,18 @@ class UserControllerTest extends WebTestCase
         $client->request('GET', '/users/create');
         // The visitor is redirected to the login page
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+    }
+
+    public function testCreateUserFormRoleUnauthorized()
+    {
+        $client = static::createClient();
+
+        $user = $this->getEntity('testUser');
+        $this->login($client, $user);
+
+        $client->request('GET', '/users/create');
+        // The visitor is redirected to the login page
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testCreateUser()
@@ -106,6 +130,18 @@ class UserControllerTest extends WebTestCase
         $client->request('GET', '/users/4/edit');
         // The visitor is redirected to the login page
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+
+    }
+
+    public function testEditUserFormRoleUnauthorized()
+    {
+        $client = static::createClient();
+        $user = $this->getEntity('testUser');
+        $this->login($client, $user);
+
+        $client->request('GET', '/users/4/edit');
+        // The visitor is redirected to the login page
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
 
     }
 
