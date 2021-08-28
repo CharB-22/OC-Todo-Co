@@ -2,10 +2,12 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Faker\Factory;
 
 /**
  * @codeCoverageIgnore
@@ -21,6 +23,8 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
+        $faker = Factory::create('fr_FR');
+
         // Create one testUser - visitor role
         $user = new User();
         $user->setEmail('testUser@mail.com')
@@ -29,7 +33,18 @@ class UserFixtures extends Fixture
                 'testUser'))
              ->setRoles(['ROLE_USER'])
              ->setUsername('testUser');
-             
+        
+        for($j = 0; $j < 2; $j++)
+        {
+            $task = new Task();
+            $task->setTitle($faker->sentence())
+                 ->setCreatedAt($faker->dateTimeBetween('-2 months'))
+                 ->setContent($faker->paragraph(1))
+                 ->setIsDone($faker->boolean())
+                 ->setUser($user);
+ 
+            $manager->persist($task);
+        }
 
         $manager->persist($user);
 
@@ -39,6 +54,18 @@ class UserFixtures extends Fixture
              ->setPassword($this->hasher->hashPassword($user,'testAdmin'))
              ->setRoles(['ROLE_ADMIN'])
              ->setUsername('testAdmin');
+
+        for($j = 0; $j < 2; $j++)
+        {
+            $task = new Task();
+            $task->setTitle($faker->sentence())
+                 ->setCreatedAt($faker->dateTimeBetween('-2 months'))
+                 ->setContent($faker->paragraph(1))
+                 ->setIsDone($faker->boolean())
+                 ->setUser($user);
+      
+            $manager->persist($task);
+        }
 
         $manager->persist($user);
 
