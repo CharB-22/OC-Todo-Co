@@ -21,30 +21,35 @@
         {% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-light navbar-fixed-top" style="background-color: #e3f2fd;" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">To Do List app</a>
-
-                    <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
+        <nav class="navbar navbar-expand-lg  navbar-light" style="background-color: #e3f2fd;" role="navigation">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ path('task_list') }}">To Do List app</a>
+                <img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{ path('user_create') }}">Créer un utilisateur</a>
+                        </li>
+                        {% if not app.user and 'login' != app.request.attributes.get('_route') %}
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{ path('app_login') }}">Se connecter</a>
+                        </li>
+                        {% endif %}
+                        {% if app.user%}
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{ path('app_logout') }}">Se Déconnecter</a>
+                        </li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
         </nav>
 
         <!-- Page Content -->
         <div class="container">
-            <div class="row">
-                <a href="{{ path('user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
-
-                {% if app.user %}
-                <a href="{{ path('app_logout') }}" class="pull-right btn btn-danger">Se déconnecter</a>
-                {% endif %}
-
-                {% if not app.user and 'login' != app.request.attributes.get('_route') %}
-                <a href="{{ path('app_login') }}" class="btn btn-success">Se connecter</a>
-                {% endif %}
-            </div>
-
             <div class="row">
                 <div class="col-md-12">
                     {% for flash_message in app.session.flashBag.get('success') %}

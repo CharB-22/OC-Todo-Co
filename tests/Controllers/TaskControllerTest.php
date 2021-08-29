@@ -60,7 +60,7 @@ class TaskControllerTest extends WebTestCase
         
         $this->assertGreaterThan(
             0,
-            $crawler->filter('.thumbnail')->count()
+            $crawler->filter('.card')->count()
         );
     }
 
@@ -211,12 +211,26 @@ class TaskControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
+        $user = $this->getEntity('testUser');
+        $this->login($client, $user);
+
         $client->request('GET', '/tasks/4/toggle');
         
         $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-        $this->assertResponseRedirects('/tasks');
         $client->followRedirect();
+        $this->assertRouteSame('task_list');
         $this->assertSelectorExists('.alert.alert-success');
+    }
+
+    public function testToggleTaskNotAuthorized()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/tasks/4/toggle');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+        $client->followRedirect();
+        $this->assertRouteSame('app_login');
     }
 
     protected function tearDown(): void
