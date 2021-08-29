@@ -84,6 +84,7 @@ class TaskController extends AbstractController
      */
     public function toggleTaskAction(Task $task)
      {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
 
