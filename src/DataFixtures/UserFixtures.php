@@ -14,7 +14,6 @@ use Faker\Factory;
  */
 class UserFixtures extends Fixture
 {
-    private $encoder;
 
     public function __construct(UserPasswordHasherInterface $hasher)
     {
