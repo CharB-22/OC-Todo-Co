@@ -9,12 +9,10 @@ Codacy's analysis : [![Codacy Badge](https://app.codacy.com/project/badge/Grade/
   * [Repository Content](#repository-content)
   * [Technologies](#technologies)
   * [Set Up](#set-up)
-  * [Live Website](#live-website)
 
 ## Repository content
   * The application pages and folders needed to run the application
   * The composer.json needed to install the libraries used for this project
-  * UML diagrams
 
 ## Technologies
   * PHP 7.4.1
