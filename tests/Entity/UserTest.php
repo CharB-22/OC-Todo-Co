@@ -3,10 +3,32 @@
 use App\Entity\Task;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserTest extends KernelTestCase {
+
+    public function runCommand($string) : int {
+
+        $kernel = static::createKernel();
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+        
+        return $application->run(new StringInput(sprintf('%s --quiet', $string)));
+    }
+
+    public function setUp(): void
+    {
+        // Initialize the database for each tests (test environment)
+        $this->runCommand('doctrine:database:drop --force --env=test');
+        $this->runCommand('doctrine:database:create --env=test');
+        $this->runCommand('doctrine:schema:create --env=test');
+        $this->runCommand('doctrine:fixtures:load --env=test');
+
+        $this->runCommand('app:link-anonymous');        
+    }
 
     public function assertHasErrors(User $user, int $number = 0)
     {
@@ -38,14 +60,14 @@ class UserTest extends KernelTestCase {
         self::bootKernel();
         $user = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['username' => 'testUser']);
         
-        $this->assertEquals(11, $user->getId());
+        $this->assertEquals(4, $user->getId());
     }
 
     public function testGetTask()
     {
         // Pick a user in the database
         self::bootKernel();
-        $user = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['id' => 8 ]);
+        $user = static::getContainer()->get('doctrine')->getManager()->getRepository(User::class)->findOneBy(['id' => 4 ]);
 
         // Make sure this existing user has 2 tasks registered to his name
         $this->assertEquals(2, count($user->getTasks()));
@@ -130,6 +152,14 @@ class UserTest extends KernelTestCase {
         $userEmail = $this->getEntity()->getEmail();
 
         $this->assertEquals($this->getEntity()->getUserIdentifier(), $userEmail);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->runCommand('doctrine:database:drop --force');
+
+        parent::tearDown();
+
     }
 
 }

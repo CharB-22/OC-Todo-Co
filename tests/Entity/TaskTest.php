@@ -5,10 +5,31 @@ namespace App\tests\Entity;
 use App\Entity\Task;
 use App\Entity\User;
 use DateTime;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Input\StringInput;
 
 class TaskTest extends KernelTestCase {
     
+    public function runCommand($string) : int {
+
+        $kernel = static::createKernel();
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+        
+        return $application->run(new StringInput(sprintf('%s --quiet', $string)));
+    }
+
+    public function setUp(): void
+    {
+        // Initialize the database for each tests (test environment)
+        $this->runCommand('doctrine:database:drop --force --env=test');
+        $this->runCommand('doctrine:database:create --env=test');
+        $this->runCommand('doctrine:schema:create --env=test');
+        $this->runCommand('doctrine:fixtures:load --env=test');
+
+        $this->runCommand('app:link-anonymous');        
+    }
 
     //Create a mock object
     public function getEntity() : Task {
@@ -86,6 +107,14 @@ class TaskTest extends KernelTestCase {
     {
         $isDoneStatus = $this->getEntity()->getIsDone();
         $this->assertIsBool($isDoneStatus);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->runCommand('doctrine:database:drop --force');
+
+        parent::tearDown();
+
     }
 
 }
