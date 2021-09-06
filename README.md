@@ -9,6 +9,7 @@ Codacy's analysis : [![Codacy Badge](https://app.codacy.com/project/badge/Grade/
   * [Repository Content](#repository-content)
   * [Technologies](#technologies)
   * [Set Up](#set-up)
+  * [Testing](#testing)
 
 ## Repository content
   * The application pages and folders needed to run the application
@@ -51,5 +52,32 @@ Codacy's analysis : [![Codacy Badge](https://app.codacy.com/project/badge/Grade/
   ```
   php -S localhost:8000 -t public
   ```
+  
+  ## Testing
+  
+  Tests have been written for the application. In order to be able to run them locally, you need to create an .env.test.local file and follow the same logic as the set-up :
+  ```
+  DATABASE_URL="mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=5.7"
+  ```
+  Update db_user, db_password and db_name with your own credentials and a name for the database for this project.
+  
+  In the tests already written, the creation of the database is specified in the setUp() method. If you still wanted to manually create the test database, the command is the same,   but the key is to indicate which environment you want it to be created:
+  
+  ```
+  php bin/console doctrine:database:create --env=test
+  ```
+  
+  To run the tests, use the command below:
+  ```
+  vendor/bin/phpunit
+  ```
+  
+  And finally, in order to check the test coverage :
+  ```
+  vendor/bin/phpunit --coverage-html web/test-coverage
+  ```
+  
+  The final dashboard will be visible in /web/test-coverage/index.html
+  
   
 Happy coding !
