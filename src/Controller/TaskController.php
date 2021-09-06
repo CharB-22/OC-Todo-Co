@@ -17,7 +17,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks", name="task_list")
      */
-    public function listAction()
+    public function listTask()
     {
         $taskList = $this->getDoctrine()->getRepository(Task::class)->findAll();
         return $this->render(
@@ -29,7 +29,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks/create", name="task_create")
      */
-    public function createAction(Request $request)
+    public function createTask(Request $request)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $task = new Task();
@@ -58,7 +58,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks/{id}/edit", name="task_edit")
      */
-    public function editAction(Task $task, Request $request)
+    public function editTask(Task $task, Request $request)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $form = $this->createForm(TaskType::class, $task);
@@ -82,7 +82,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks/{id}/toggle", name="task_toggle")
      */
-    public function toggleTaskAction(Task $task)
+    public function toggleTask(Task $task)
      {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $task->toggle(!$task->isDone());
@@ -96,7 +96,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks/{id}/delete", name="task_delete")
      */
-    public function deleteTaskAction(Task $task)
+    public function deleteTask(Task $task)
     {
 
         if ($this->getUser() === $task->getUser() || $this->isGranted("ROLE_ADMIN"))

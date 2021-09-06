@@ -28,29 +28,26 @@ class UserType extends AbstractType
             ])
             ->add('email', EmailType::class, ['label' => 'Adresse email'])
             ->add('roles', ChoiceType::class, [
-                'label' => 'Veuillez choisir un rôle',
+                'required' => true,
                 'choices' => [
-                    'Administrateur' => 'ROLE_ADMIN',
-                    'Utilisateur' => 'ROLE_USER'
+                    'Utilisateur' => 'ROLE_USER',
+                    'Administrateur' => 'ROLE_ADMIN'
                 ],
-                'expanded' => false,
-                'multiple' => false,
-                'required' =>true,
             ])
         ;
 
         // Data transformer
         $builder->get('roles')
-                ->addModelTransformer(new CallbackTransformer(
-                    function ($rolesArray) {
-                         // transform the array to a string
-                         return count($rolesArray)? $rolesArray[0]: null;
-                    },
-                    function ($rolesString) {
-                         // transform the string back to an array
-                         return [$rolesString];
-                    }
-            ));
+            ->addModelTransformer(new CallbackTransformer(
+                function ($rolesArray) {
+                     // transform the array to a string
+                     return count($rolesArray)? $rolesArray[0]: null;
+                },
+                function ($rolesString) {
+                     // transform the string back to an array
+                     return [$rolesString];
+                }
+        ));
     }
 
     public function configureOptions(OptionsResolver $resolver)

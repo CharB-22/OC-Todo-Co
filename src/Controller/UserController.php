@@ -17,20 +17,20 @@ class UserController extends AbstractController
      * @Route("/users", name="user_list")
      * @IsGranted("ROLE_ADMIN")
      */
-    public function listAction()
+    public function listUser()
     {   
         return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository(User::class)->findAll()]);
     }
 
     /**
      * @Route("/users/create", name="user_create")
-     * @IsGranted("ROLE_ADMIN")
+     * 
      */
-    public function createAction(Request $request, UserPasswordHasherInterface $passwordHasher)
+    public function createUser(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
-
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() &&  $form->isValid()) {
@@ -52,7 +52,7 @@ class UserController extends AbstractController
      * @Route("/users/{id}/edit", name="user_edit")
      * @IsGranted("ROLE_ADMIN")
      */
-    public function editAction(User $user, UserPasswordHasherInterface $passwordHasher, Request $request)
+    public function editUser(User $user, UserPasswordHasherInterface $passwordHasher, Request $request)
     {
         $form = $this->createForm(UserType::class, $user);
 
