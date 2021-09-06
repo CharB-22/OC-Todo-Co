@@ -41,9 +41,9 @@ Codacy's analysis : [![Codacy Badge](https://app.codacy.com/project/badge/Grade/
   ```
   * Import the structure of the database thanks to the migrations in the project :
   ```
-  php bin/console doctrine:database:create
+  php bin/console doctrine:schema:create
   ```
-  * Populate the database with the datas used to test
+  * Populate the database with some datas if you want to have a look and feel.
   ```
   php bin/console doctrine:fixtures:load
   ```
