@@ -3,13 +3,6 @@
 
 Do you want contribute to the project ? Please, follow the steps below in order to help us on ToDo&Co !
 
-
-## Tables of Contents
-  * [Repository Content](#repository-content)
-  * [Technologies](#technologies)
-  * [Set Up](#set-up)
-  * [Live Website](#live-website)
-
 ## Step 1: Fork this repository
 Create a fork of this project - you will find the icon on the top of this page. This will create a copy of this repository in your github account.
 
