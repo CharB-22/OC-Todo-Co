@@ -65,8 +65,11 @@ Once you have the green light after running the tests, you can commit your chang
   git commit -m "Explicit message about your changes"
   ``` 
 
+## Step 6: Check the quality of your code with Codacy
 
-## Step 6:  Push changes to Github
+Before going live, make sure you are reviewing your code with the Codacy platform - you just need to add your github repository to your codacy account. The grade must not be lower than **A**.
+
+## Step 7:  Push changes to Github
 
 Push your changes using the command git push:
   ```
