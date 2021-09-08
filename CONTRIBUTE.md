@@ -69,6 +69,12 @@ Once you have the green light after running the tests, you can commit your chang
 
 Before going live, make sure you are reviewing your code with the Codacy platform - you just need to add your github repository to your codacy account. The grade must not be lower than **A**.
 
+In order to respect our quality standards, make sure to follow the below guidelines:
+* Follow the PHP Standards Recommendations (PSR)
+* To make it easier to collaborate, make sure to use explicit method and variable names - ie : createUser(). Use camelCase to be consistent across the project.
+* If one of your method can't be understood at first sight, add some comments, so anyone can be able to understand its goal and what to expect.
+* To be easy to read, make sure you are using indentation properly 
+
 ## Step 7:  Push changes to Github
 
 Push your changes using the command git push:
@@ -77,7 +83,7 @@ Push your changes using the command git push:
   ``` 
 replacing <add-your-branch-name> with the name of the branch you created earlier.
 
-## Step 7:  Push changes to Github
+## Step 8:  Submit your pull request:
 Go to your repository on Github to see that the button <Compare & pull request> has appeared. Click on that button to submit your pull request.
 
 Once the pull request has been submitted, the team will have a look before merging your work to the main branch.
