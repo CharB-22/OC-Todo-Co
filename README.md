@@ -25,15 +25,17 @@ Codacy's analysis : [![Codacy Badge](https://app.codacy.com/project/badge/Grade/
   ```
   git clone https://github.com/CharB-22/OC-Todo-Co.git
   ```
-  * Install the needed libraries via composer
+  * Make sure you have Composer installed on your computer, as it is needed to install any packages. If this is not the case, follow the directions on the composer website to dowload it: https://getcomposer.org/download/ 
+  
+  * Install the needed libraries via composer with the command below:
   ```
   composer install
   ```
-  * Create an .env.local file if you run the website locally in order to update the database url. Add this link to the file :
+  * For this application, you need to have MySQL to manage your database - usually available if you are using MAMP or WAMP Server locally. Create an .env.local file if you run the website locally in order to update the database url. Add this link to the file :
   ```
   DATABASE_URL="mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=5.7"
   ```
-  Update db_user, db_password and db_name with your own credentials and a name for the database for this project.
+  Update db_user, db_password and db_name with your MySQL credentials and a name for the database of this project.
   An alternative is to just update this link directly into the .env file - however, make sure to remove # in front of the link, and update only the mysql one.
 
   * Create the database via your command line :
@@ -48,6 +50,11 @@ Codacy's analysis : [![Codacy Badge](https://app.codacy.com/project/badge/Grade/
   ```
   php bin/console doctrine:fixtures:load
   ```
+  * Last but not least, this project is using WebPack Encore for the css and js files integration. Once again, make sure you have it installed and run the command below to build it:
+  ```
+  npm run build
+  ```
+
   * Start your server to go to the website demo:
   ```
   php -S localhost:8000 -t public
