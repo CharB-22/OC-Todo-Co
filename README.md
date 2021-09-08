@@ -50,7 +50,7 @@ Codacy's analysis : [![Codacy Badge](https://app.codacy.com/project/badge/Grade/
   ```
   php bin/console doctrine:fixtures:load
   ```
-  * Last but not least, this project is using WebPack Encore for the css and js files integration. To have it running correctly, you need to have the node_modules folder (exclude by .gitignore) locally. To do so, you just need to run the command below:
+  * Last but not least, this project is using WebPack Encore for the css and js files integration. Webpack Encore needs npm and the node_modules folder (exclude by .gitignore) locally to be able to work. To do so, you just need to run the command below:
   ```
   npm install
   ```
